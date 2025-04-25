@@ -30,9 +30,6 @@ if uploaded_file:
     if uploaded_file.name.endswith(".gcode"):
         content = uploaded_file.read().decode("utf-8")
 
-        # Aggiungi il debug: visualizza il contenuto del G-code
-        st.text_area("Contenuto G-code", content, height=300)  # Mostra tutto il G-code per il debug
-
         # Estrazione del peso del filamento
         match_filament = re.search(r";\s*filament used \[g\]\s*=\s*([\d\.]+)", content)
         if match_filament:
@@ -64,7 +61,7 @@ if uploaded_file:
     costo_ora_stampa = 1.50
     costo_elettricita_ora = 0.10
     avviamento = 2.00
-    margine = 30
+    margine = 50  # Margine di guadagno aggiornato al 50%
     dettagli = {"Basso": 0.0, "Medio": 0.15, "Alto": 0.30}
 
     # Calcoli
