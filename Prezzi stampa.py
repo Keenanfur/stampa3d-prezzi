@@ -8,6 +8,7 @@ st.title("Calcolo Prezzo da File G-code o 3MF")
 
 uploaded_file = st.file_uploader("Carica il tuo file G-code o 3MF", type=["gcode", "3mf"])
 
+
 def estrai_dati_da_3mf(file):
     with zipfile.ZipFile(file, 'r') as archive:
         for name in archive.namelist():
@@ -15,11 +16,12 @@ def estrai_dati_da_3mf(file):
                 content = archive.read(name).decode("utf-8")
                 time_match = re.search(r'<slicestats:printingTime>([\d\.]+)</slicestats:printingTime>', content)
                 weight_match = re.search(r'<slicestats:filamentWeight>([\d\.]+)</slicestats:filamentWeight>', content)
-                
+
                 minuti = float(time_match.group(1)) if time_match else 0
                 grammi = float(weight_match.group(1)) if weight_match else 0
                 return grammi, minuti
     return 0, 0
+
 
 if uploaded_file:
     materiale = st.selectbox("Materiale", ["PLA", "PETG", "TPU"])
@@ -27,13 +29,27 @@ if uploaded_file:
 
     if uploaded_file.name.endswith(".gcode"):
         content = uploaded_file.read().decode("utf-8")
-        match_filament = re.search(r"Filament used: ([\d\.]+)g", content)
-        grammi = float(match_filament.group(1)) if match_filament else 0
 
+        # Aggiungi il debug: visualizza il contenuto del G-code
+        st.text_area("Contenuto G-code", content, height=300)  # Mostra tutto il G-code per il debug
+
+        # Estrazione del peso del filamento
+        match_filament = re.search(r"Filament used: ([\d\.]+)g", content)
+        if match_filament:
+            grammi = float(match_filament.group(1))
+        else:
+            grammi = 0
+            st.warning("Peso del filamento non trovato nel G-code!")
+
+        # Estrazione del tempo di stampa
         match_time = re.search(r"Print time: (?:(\d+)h )?(\d+)m", content)
-        ore = int(match_time.group(1)) if match_time and match_time.group(1) else 0
-        minuti = int(match_time.group(2)) if match_time else 0
-        tempo_totale_minuti = ore * 60 + minuti
+        if match_time:
+            ore = int(match_time.group(1)) if match_time and match_time.group(1) else 0
+            minuti = int(match_time.group(2)) if match_time else 0
+            tempo_totale_minuti = ore * 60 + minuti
+        else:
+            tempo_totale_minuti = 0
+            st.warning("Tempo di stampa non trovato nel G-code!")
 
     elif uploaded_file.name.endswith(".3mf"):
         grammi, tempo_totale_minuti = estrai_dati_da_3mf(uploaded_file)
