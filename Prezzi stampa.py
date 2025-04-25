@@ -85,10 +85,11 @@ if uploaded_file:
         # Calcolo del peso in base al volume e densità
         grammi = volume_stl * densita_materiale  # Peso in grammi basato sul volume e densità
 
-        # Verifica che il peso calcolato non sia troppo esagerato
+        # Se il peso calcolato è troppo grande, diminuiamo il volume (fattore di correzione)
         if grammi > 1000:  # Limite di sicurezza (per esempio 1000g)
             st.warning(
                 f"Attenzione: il peso calcolato ({grammi:.2f}g) sembra essere troppo elevato. Potrebbe esserci un problema con la scala del modello.")
+            grammi /= 1000  # Fattore di correzione per ridurre il peso (esempio: per millimetri al posto di centimetri)
 
         tempo_totale_minuti = 0  # Tempo di stampa non disponibile per STL, ma può essere stimato tramite slicing
 
