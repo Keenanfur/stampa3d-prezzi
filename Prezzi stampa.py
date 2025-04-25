@@ -34,7 +34,7 @@ if uploaded_file:
         st.text_area("Contenuto G-code", content, height=300)  # Mostra tutto il G-code per il debug
 
         # Estrazione del peso del filamento
-        match_filament = re.search(r"Filament used: ([\d\.]+)g", content)
+        match_filament = re.search(r";\s*filament used \[g\]\s*=\s*([\d\.]+)", content)
         if match_filament:
             grammi = float(match_filament.group(1))
         else:
@@ -42,11 +42,12 @@ if uploaded_file:
             st.warning("Peso del filamento non trovato nel G-code!")
 
         # Estrazione del tempo di stampa
-        match_time = re.search(r"Print time: (?:(\d+)h )?(\d+)m", content)
+        match_time = re.search(r";\s*estimated printing time \(normal mode\)\s*=\s*(\d+)h\s*(\d+)m\s*(\d+)s", content)
         if match_time:
-            ore = int(match_time.group(1)) if match_time and match_time.group(1) else 0
-            minuti = int(match_time.group(2)) if match_time else 0
-            tempo_totale_minuti = ore * 60 + minuti
+            ore = int(match_time.group(1))
+            minuti = int(match_time.group(2))
+            secondi = int(match_time.group(3))
+            tempo_totale_minuti = ore * 60 + minuti + (secondi / 60)
         else:
             tempo_totale_minuti = 0
             st.warning("Tempo di stampa non trovato nel G-code!")
@@ -78,7 +79,7 @@ if uploaded_file:
 
     st.markdown("### Risultati del calcolo:")
     st.write(f"Peso del filamento: {grammi:.2f} g")
-    st.write(f"Tempo di stampa: {tempo_totale_minuti:.0f} minuti")
+    st.write(f"Tempo di stampa: {tempo_totale_minuti:.2f} minuti")
     st.write(f"Costo materiale: €{costo_materiale:.2f}")
     st.write(f"Costo stampa: €{costo_stampa:.2f}")
     st.write(f"Costo elettricità: €{costo_elettricita:.2f}")
