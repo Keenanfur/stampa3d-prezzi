@@ -6,6 +6,23 @@ import zipfile
 
 st.title("Calcolo Prezzo da File G-code o 3MF")
 
+# Rendi il pulsante di caricamento file più grande
+st.markdown("""
+    <style>
+    .stFileUploader > label {
+        font-size: 20px;
+        padding: 20px;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    .stFileUploader input[type="file"] {
+        display: none;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 uploaded_file = st.file_uploader("Carica il tuo file G-code o 3MF", type=["gcode", "3mf"])
 
 
