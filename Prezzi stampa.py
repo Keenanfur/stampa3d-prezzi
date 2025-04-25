@@ -51,6 +51,9 @@ if uploaded_file:
     totale = 0  # Impostiamo una variabile per totale, inizializzata a 0
     volume_stl = 0
 
+    # Densità materiale - facoltativo da cambiare
+    densita_materiale = 1.25  # g/cm³ per PLA, ma può essere modificato
+
     if uploaded_file.name.endswith(".gcode"):
         content = uploaded_file.read().decode("utf-8")
 
@@ -79,8 +82,7 @@ if uploaded_file:
         # Verifica del volume del modello STL
         st.write(f"Volume del modello STL: {volume_stl:.2f} cm³")
 
-        # Utilizziamo una densità approssimativa per il materiale PLA (1.25 g/cm³)
-        densita_materiale = 1.25  # g/cm³ per PLA
+        # Calcolo del peso in base al volume e densità
         grammi = volume_stl * densita_materiale  # Peso in grammi basato sul volume e densità
 
         # Verifica che il peso calcolato non sia troppo esagerato
