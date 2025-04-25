@@ -4,6 +4,7 @@ import pandas as pd
 import io
 import zipfile
 from stl import mesh
+import tempfile
 
 st.title("Calcolo Prezzo da File G-code, 3MF o STL")
 
@@ -25,7 +26,13 @@ def estrai_dati_da_3mf(file):
 
 
 def calcola_volume_stl(file):
-    model = mesh.Mesh.from_file(file)
+    # Creiamo un file temporaneo per salvare il file STL
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.stl') as temp_file:
+        temp_file.write(file.read())  # Salviamo il contenuto del file STL
+        temp_file_path = temp_file.name
+
+    # Carichiamo il file STL dal percorso temporaneo
+    model = mesh.Mesh.from_file(temp_file_path)
     volume = model.get_mass_properties()[0]  # Ottiene il volume del modello
     return volume
 
@@ -63,38 +70,4 @@ if uploaded_file:
         volume = calcola_volume_stl(uploaded_file)
         # Utilizziamo una densità approssimativa per il materiale PLA (1.25 g/cm³)
         densita_materiale = 1.25  # g/cm³ per PLA
-        grammi = volume * densita_materiale  # Peso in grammi basato sul volume e densità
-        tempo_totale_minuti = 0  # Tempo di stampa non disponibile per STL, ma può essere stimato tramite slicing
-
-    # Parametri di costo
-    costi = {
-        "PLA": 0.06,
-        "PETG": 0.08,
-        "TPU": 0.10,
-    }
-    costo_ora_stampa = 1.50
-    costo_elettricita_ora = 0.10
-    avviamento = 2.00
-    margine = 50  # Margine di guadagno aggiornato al 50%
-    dettagli = {"Basso": 0.0, "Medio": 0.15, "Alto": 0.30}
-
-    # Calcoli
-    costo_materiale = grammi * costi[materiale]
-    costo_stampa = (tempo_totale_minuti / 60) * costo_ora_stampa
-    costo_elettricita = (tempo_totale_minuti / 60) * costo_elettricita_ora
-    parziale = costo_materiale + costo_stampa + costo_elettricita + avviamento
-    supplemento = parziale * dettagli[dettaglio]
-    totale = parziale + supplemento
-    margine_val = totale * (margine / 100)
-    prezzo_finale = totale + margine_val
-
-    st.markdown("### Risultati del calcolo:")
-    st.write(f"Peso del filamento: {grammi:.2f} g")
-    st.write(f"Tempo di stampa: {tempo_totale_minuti:.2f} minuti")
-    st.write(f"Costo materiale: €{costo_materiale:.2f}")
-    st.write(f"Costo stampa: €{costo_stampa:.2f}")
-    st.write(f"Costo elettricità: €{costo_elettricita:.2f}")
-    st.write(f"Costo avviamento: €{avviamento:.2f}")
-    st.write(f"Supplemento dettaglio ({dettaglio}): €{supplemento:.2f}")
-    st.write(f"Margine di guadagno ({margine}%): €{margine_val:.2f}")
-    st.subheader(f"Prezzo Finale: €{prezzo_finale:.2f}")
+        grammi = volume * dens *
