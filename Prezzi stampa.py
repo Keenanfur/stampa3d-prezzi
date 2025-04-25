@@ -45,6 +45,7 @@ if uploaded_file:
     grammi = 0
     tempo_totale_minuti = 0
     totale = 0  # Impostiamo una variabile per totale, inizializzata a 0
+    volume_stl = 0
 
     if uploaded_file.name.endswith(".gcode"):
         content = uploaded_file.read().decode("utf-8")
@@ -70,10 +71,13 @@ if uploaded_file:
         grammi, tempo_totale_minuti = estrai_dati_da_3mf(uploaded_file)
 
     elif uploaded_file.name.endswith(".stl"):
-        volume = calcola_volume_stl(uploaded_file)
+        volume_stl = calcola_volume_stl(uploaded_file)
+        # Verifica del volume del modello
+        st.write(f"Volume del modello STL: {volume_stl:.2f} cm³")
+
         # Utilizziamo una densità approssimativa per il materiale PLA (1.25 g/cm³)
         densita_materiale = 1.25  # g/cm³ per PLA
-        grammi = volume * densita_materiale  # Peso in grammi basato sul volume e densità
+        grammi = volume_stl * densita_materiale  # Peso in grammi basato sul volume e densità
         tempo_totale_minuti = 0  # Tempo di stampa non disponibile per STL, ma può essere stimato tramite slicing
 
     # Parametri di costo
