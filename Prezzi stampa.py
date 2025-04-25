@@ -33,7 +33,11 @@ def calcola_volume_stl(file):
 
     # Carichiamo il file STL dal percorso temporaneo
     model = mesh.Mesh.from_file(temp_file_path)
+
+    # Otteniamo il volume del modello
     volume = model.get_mass_properties()[0]  # Ottiene il volume del modello
+    st.write(f"Volume del modello STL (in cm³): {volume:.2f}")
+
     return volume
 
 
@@ -72,12 +76,18 @@ if uploaded_file:
 
     elif uploaded_file.name.endswith(".stl"):
         volume_stl = calcola_volume_stl(uploaded_file)
-        # Verifica del volume del modello
+        # Verifica del volume del modello STL
         st.write(f"Volume del modello STL: {volume_stl:.2f} cm³")
 
         # Utilizziamo una densità approssimativa per il materiale PLA (1.25 g/cm³)
         densita_materiale = 1.25  # g/cm³ per PLA
         grammi = volume_stl * densita_materiale  # Peso in grammi basato sul volume e densità
+
+        # Verifica che il peso calcolato non sia troppo esagerato
+        if grammi > 1000:  # Limite di sicurezza (per esempio 1000g)
+            st.warning(
+                f"Attenzione: il peso calcolato ({grammi:.2f}g) sembra essere troppo elevato. Potrebbe esserci un problema con la scala del modello.")
+
         tempo_totale_minuti = 0  # Tempo di stampa non disponibile per STL, ma può essere stimato tramite slicing
 
     # Parametri di costo
