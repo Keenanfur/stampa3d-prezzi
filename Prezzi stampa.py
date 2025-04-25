@@ -3,10 +3,11 @@ import streamlit as st
 import pandas as pd
 import io
 import zipfile
+from stl import mesh
 
-st.title("Calcolo Prezzo da File G-code o 3MF")
+st.title("Calcolo Prezzo da File G-code, 3MF o STL")
 
-uploaded_file = st.file_uploader("Carica il tuo file G-code o 3MF", type=["gcode", "3mf"])
+uploaded_file = st.file_uploader("Carica il tuo file G-code, 3MF o STL", type=["gcode", "3mf", "stl"])
 
 
 def estrai_dati_da_3mf(file):
@@ -21,6 +22,12 @@ def estrai_dati_da_3mf(file):
                 grammi = float(weight_match.group(1)) if weight_match else 0
                 return grammi, minuti
     return 0, 0
+
+
+def calcola_volume_stl(file):
+    model = mesh.Mesh.from_file(file)
+    volume = model.get_mass_properties()[0]  # Ottiene il volume del modello
+    return volume
 
 
 if uploaded_file:
@@ -51,6 +58,13 @@ if uploaded_file:
 
     elif uploaded_file.name.endswith(".3mf"):
         grammi, tempo_totale_minuti = estrai_dati_da_3mf(uploaded_file)
+
+    elif uploaded_file.name.endswith(".stl"):
+        volume = calcola_volume_stl(uploaded_file)
+        # Utilizziamo una densità approssimativa per il materiale PLA (1.25 g/cm³)
+        densita_materiale = 1.25  # g/cm³ per PLA
+        grammi = volume * densita_materiale  # Peso in grammi basato sul volume e densità
+        tempo_totale_minuti = 0  # Tempo di stampa non disponibile per STL, ma può essere stimato tramite slicing
 
     # Parametri di costo
     costi = {
