@@ -70,4 +70,23 @@ if uploaded_file:
         volume = calcola_volume_stl(uploaded_file)
         # Utilizziamo una densità approssimativa per il materiale PLA (1.25 g/cm³)
         densita_materiale = 1.25  # g/cm³ per PLA
-        grammi = volume * dens *
+        grammi = volume * densita_materiale  # Peso in grammi basato sul volume e densità
+        tempo_totale_minuti = 0  # Tempo di stampa non disponibile per STL, ma può essere stimato tramite slicing
+
+    # Parametri di costo
+    costi = {
+        "PLA": 0.06,
+        "PETG": 0.08,
+        "TPU": 0.10,
+    }
+    costo_ora_stampa = 1.50
+    costo_elettricita_ora = 0.10
+    avviamento = 2.00
+    margine = 50  # Margine di guadagno aggiornato al 50%
+    dettagli = {"Basso": 0.0, "Medio": 0.15, "Alto": 0.30}
+
+    # Calcoli
+    costo_materiale = grammi * costi[materiale]
+    costo_stampa = (tempo_totale_minuti / 60) * costo_ora_stampa
+    costo_elettricita = (tempo_totale_minuti / 60) * costo_elettricita_ora
+    parziale = costo_materiale + costo_stampa + costo_elettricita + avvi_
