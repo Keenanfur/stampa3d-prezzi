@@ -89,4 +89,6 @@ if uploaded_file:
     costo_materiale = grammi * costi[materiale]
     costo_stampa = (tempo_totale_minuti / 60) * costo_ora_stampa
     costo_elettricita = (tempo_totale_minuti / 60) * costo_elettricita_ora
-    parziale = costo_materiale + costo_stampa + costo_elettricita + avvi_
+    parziale = costo_materiale + costo_stampa + costo_elettricita + avviamento
+    supplemento = parziale * dettagli[dettaglio]
+    totale
