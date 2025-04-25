@@ -84,11 +84,15 @@ if uploaded_file:
     costo_elettricita_ora = 0.10
     avviamento = 2.00
     margine = 50  # Margine di guadagno aggiornato al 50%
-    supplemento_colore = 2.00  # Supplemento se colorato
+    supplemento_colore_perc = 0.20  # 20% come supplemento per il colore
     dettagli = {"Basso": 0.0, "Medio": 0.15, "Alto": 0.30}
 
     # Aggiungere supplemento per oggetto colorato
-    supplemento_colore_finale = supplemento_colore if colorato == "Sì" else 0.00
+    supplemento_colore_finale = 0
+    if colorato == "Sì":
+        # Il supplemento colorato è una percentuale del costo totale del materiale
+        costo_materiale = grammi * costi[materiale]
+        supplemento_colore_finale = costo_materiale * supplemento_colore_perc
 
     # Calcoli
     costo_materiale = grammi * costi[materiale]
