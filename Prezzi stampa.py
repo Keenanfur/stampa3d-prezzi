@@ -41,6 +41,11 @@ if uploaded_file:
     materiale = st.selectbox("Materiale", ["PLA", "PETG", "TPU"])
     dettaglio = st.selectbox("Livello di dettaglio", ["Basso", "Medio", "Alto"])
 
+    # Variabili per il calcolo
+    grammi = 0
+    tempo_totale_minuti = 0
+    totale = 0  # Impostiamo una variabile per totale, inizializzata a 0
+
     if uploaded_file.name.endswith(".gcode"):
         content = uploaded_file.read().decode("utf-8")
 
@@ -49,7 +54,6 @@ if uploaded_file:
         if match_filament:
             grammi = float(match_filament.group(1))
         else:
-            grammi = 0
             st.warning("Peso del filamento non trovato nel G-code!")
 
         # Estrazione del tempo di stampa
@@ -60,7 +64,6 @@ if uploaded_file:
             secondi = int(match_time.group(3))
             tempo_totale_minuti = ore * 60 + minuti + (secondi / 60)
         else:
-            tempo_totale_minuti = 0
             st.warning("Tempo di stampa non trovato nel G-code!")
 
     elif uploaded_file.name.endswith(".3mf"):
@@ -91,4 +94,18 @@ if uploaded_file:
     costo_elettricita = (tempo_totale_minuti / 60) * costo_elettricita_ora
     parziale = costo_materiale + costo_stampa + costo_elettricita + avviamento
     supplemento = parziale * dettagli[dettaglio]
-    totale
+    totale = parziale + supplemento  # Assicuriamoci che totale venga calcolato sempre
+    margine_val = totale * (margine / 100)
+    prezzo_finale = totale + margine_val
+
+    # Risultati
+    st.markdown("### Risultati del calcolo:")
+    st.write(f"Peso del filamento: {grammi:.2f} g")
+    st.write(f"Tempo di stampa: {tempo_totale_minuti:.2f} minuti")
+    st.write(f"Costo materiale: €{costo_materiale:.2f}")
+    st.write(f"Costo stampa: €{costo_stampa:.2f}")
+    st.write(f"Costo elettricità: €{costo_elettricita:.2f}")
+    st.write(f"Costo avviamento: €{avviamento:.2f}")
+    st.write(f"Supplemento dettaglio ({dettaglio}): €{supplemento:.2f}")
+    st.write(f"Margine di guadagno ({margine}%): €{margine_val:.2f}")
+    st.subheader(f"Prezzo Finale: €{prezzo_finale:.2f}")
