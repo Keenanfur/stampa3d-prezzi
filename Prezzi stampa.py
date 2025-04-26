@@ -52,15 +52,15 @@ if uploaded_file:
 
     # Parametri di costo
     costi = {
-        "PLA": 0.06,
-        "PETG": 0.08,
-        "TPU": 0.10,
-        "ABS": 0.12,
+        "PLA": 0.025,
+        "PETG": 0.03,
+        "TPU": 0.04,
+        "ABS": 0.05,
     }
     costo_ora_stampa = 1.50
     costo_elettricita_ora = 0.10
     avviamento = 2.00
-    margine = 50  # Margine di guadagno aggiornato al 50%
+    margine = 40  # Margine di guadagno aggiornato al 40%
     supplemento_colore_perc = 0.20  # 20% come supplemento per il colore
     dettagli = {"Basso": 0.0, "Medio": 0.15, "Alto": 0.30}
 
