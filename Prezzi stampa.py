@@ -87,3 +87,4 @@ if uploaded_file:
     st.write(f"Supplemento dettaglio ({dettaglio}): €{supplemento:.2f}")
     st.write(f"Margine di guadagno ({margine}%): €{margine_val:.2f}")
     st.subheader(f"Prezzo Finale: €{prezzo_finale:.2f}")
+
