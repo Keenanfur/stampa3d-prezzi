@@ -54,7 +54,7 @@ if uploaded_file:
     costi = {
         "PLA": 0.025,
         "PETG": 0.03,
-        "TPU": 0.04,
+        "TPU": 0.045,
         "ABS": 0.04,
     }
     costo_ora_stampa = 1.50
@@ -87,4 +87,3 @@ if uploaded_file:
     st.write(f"Supplemento dettaglio ({dettaglio}): €{supplemento:.2f}")
     st.write(f"Margine di guadagno ({margine}%): €{margine_val:.2f}")
     st.subheader(f"Prezzo Finale: €{prezzo_finale:.2f}")
-
