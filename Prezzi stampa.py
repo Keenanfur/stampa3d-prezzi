@@ -55,7 +55,7 @@ if uploaded_file:
         "PLA": 0.025,
         "PETG": 0.03,
         "TPU": 0.04,
-        "ABS": 0.05,
+        "ABS": 0.04,
     }
     costo_ora_stampa = 1.50
     costo_elettricita_ora = 0.10
